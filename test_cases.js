@@ -1,1 +1,0 @@
-Test cases for 'page.html' will be written here.
