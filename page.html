@@ -1,59 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simple Page with Navbar and Card</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f4f4f4;
-    }
-    .navbar {
-        background-color: #333;
-        overflow: hidden;
-    }
-    .navbar a {
-        float: left;
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 14px 20px;
-        text-decoration: none;
-    }
-    .navbar a:hover {
-        background-color: #ddd;
-        color: black;
-    }
-    .card {
-        background-color: white;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        max-width: 300px;
-        text-align: center;
-    }
-</style>
-</head>
-<body>
-<div class="navbar">
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#portfolio">Portfolio</a>
-    <a href="#contact">Contact</a>
-</div>
 
-<div class="card">
-    <h1>Welcome!</h1>
-    <p>This is a simple card in the center of the page.</p>
-</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management System</title>
+    <style>
+        /* Styles for the user list */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Styles for form */
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>User Management System</h1>
+
+    <form id="userForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Add User</button>
+    </form>
+
+    <ul id="userList"></ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userList = document.getElementById('userList');
+            const userForm = document.getElementById('userForm');
+
+            // Dummy data for initial display
+            let users = [
+                { id: 1, name: 'John Doe', email: 'john@example.com' },
+                { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
+            ];
+
+            // Function to render users
+            function renderUsers() {
+                userList.innerHTML = '';
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${user.name}</strong> - ${user.email} 
+                            [<a href="#" class="edit" data-id="${user.id}">Edit</a>] 
+                            [<a href="#" class="delete" data-id="${user.id}">Delete</a>]`;
+                    userList.appendChild(li);
+                });
+                attachEventListeners();
+            }
+
+            // Function to attach event listeners for edit and delete buttons
+            function attachEventListeners() {
+                const editButtons = document.querySelectorAll('.edit');
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const userId = parseInt(button.getAttribute('data-id'));
+                        editUser(userId);
+                    });
+                });
+
+                const deleteButtons = document.querySelectorAll('.delete');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        const userId = parseInt(button.getAttribute('data-id'));
+                        deleteUser(userId);
+                    });
+                });
+            }
+
+            // Function to add a user
+            function addUser(name, email) {
+                const id = users.length + 1;
+                users.push({ id, name, email });
+                renderUsers();
+            }
+
+            // Function to edit a user
+            function editUser(id) {
+                const user = users.find(user => user.id === id);
+                const newName = prompt('Enter new name:', user.name);
+                const newEmail = prompt('Enter new email:', user.email);
+                if (newName && newEmail) {
+                    user.name = newName;
+                    user.email = newEmail;
+                    renderUsers();
+                }
+            }
+
+            // Function to delete a user
+            function deleteUser(id) {
+                users = users.filter(user => user.id !== id);
+                renderUsers();
+            }
+
+            // Event listener for form submission
+            userForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                addUser(name, email);
+                userForm.reset();
+            });
+
+            // Initial rendering of users
+            renderUsers();
+        });
+    </script>
 
 </body>
+
 </html>
